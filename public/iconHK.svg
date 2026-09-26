@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#142247" />
+      <stop offset="50%" stop-color="#0a1226" />
+      <stop offset="100%" stop-color="#040814" />
+    </radialGradient>
+
+    <!-- Outer Gold Ring Gradient -->
+    <linearGradient id="goldRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCEBA6" />
+      <stop offset="25%" stop-color="#DCA22B" />
+      <stop offset="50%" stop-color="#FFF2B8" />
+      <stop offset="75%" stop-color="#9E6D10" />
+      <stop offset="100%" stop-color="#ECC65F" />
+    </linearGradient>
+
+    <!-- Metallic Gold Primary for HK Letters -->
+    <linearGradient id="goldMetallic" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF5C2" />
+      <stop offset="18%" stop-color="#E5AF36" />
+      <stop offset="42%" stop-color="#FFF9D6" />
+      <stop offset="65%" stop-color="#B57F14" />
+      <stop offset="85%" stop-color="#8F5E05" />
+      <stop offset="100%" stop-color="#F2D179" />
+    </linearGradient>
+
+    <!-- Left Bevel Highlight -->
+    <linearGradient id="bevelLight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.8" />
+      <stop offset="50%" stop-color="#FDE89C" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#9C6B08" stop-opacity="0.2" />
+    </linearGradient>
+
+    <!-- Dark Shadow Bevel -->
+    <linearGradient id="bevelDark" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4A3102" />
+      <stop offset="100%" stop-color="#1A1100" />
+    </linearGradient>
+
+    <!-- Drop Shadow Filter -->
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#D4A029" flood-opacity="0.35" />
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+
+    <filter id="subtleGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#059669" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Base Circle Background with Dark Luxury Finish -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+
+  <!-- Outer Decorative Concentric Gold Rings -->
+  <circle cx="256" cy="256" r="226" fill="none" stroke="url(#goldRing)" stroke-width="4.5" opacity="0.9" />
+  <circle cx="256" cy="256" r="214" fill="none" stroke="url(#goldRing)" stroke-width="1.5" stroke-dasharray="8 6" opacity="0.65" />
+  <circle cx="256" cy="256" r="202" fill="none" stroke="#ECC65F" stroke-width="0.8" opacity="0.3" />
+
+  <!-- Subtle Inner Radial Glow -->
+  <circle cx="256" cy="245" r="140" fill="#DCA22B" opacity="0.08" />
+
+  <!-- Mini Top Crown / Emblem Accents -->
+  <g transform="translate(256, 105)" filter="url(#goldGlow)">
+    <polygon points="0,-16 -12,2 0,-4 12,2" fill="url(#goldMetallic)" />
+    <circle cx="0" cy="-22" r="4.5" fill="#FFF8D6" />
+    <circle cx="-16" cy="-14" r="3.5" fill="url(#goldRing)" />
+    <circle cx="16" cy="-14" r="3.5" fill="url(#goldRing)" />
+  </g>
+
+  <!-- The Monogram 'HK' in High-Relief Beveled Gold -->
+  <g filter="url(#goldGlow)">
+    <!-- LEFT PILLAR OF 'H' -->
+    <!-- Main stem -->
+    <path d="M 124 150 L 172 150 L 172 362 L 124 362 Z" fill="url(#goldMetallic)" />
+    <!-- Left highlight bevel -->
+    <path d="M 124 150 L 136 160 L 136 352 L 124 362 Z" fill="url(#bevelLight)" />
+    <!-- Right shadow bevel -->
+    <path d="M 160 160 L 172 150 L 172 362 L 160 352 Z" fill="url(#bevelDark)" opacity="0.4" />
+
+    <!-- CROSSBAR OF 'H' CONNECTING TO 'K' -->
+    <path d="M 172 232 L 274 232 L 274 278 L 172 278 Z" fill="url(#goldMetallic)" />
+    <!-- Crossbar top bevel -->
+    <path d="M 172 232 L 274 232 L 264 242 L 172 242 Z" fill="url(#bevelLight)" />
+    <!-- Crossbar bottom shadow -->
+    <path d="M 172 268 L 264 268 L 274 278 L 172 278 Z" fill="url(#bevelDark)" opacity="0.45" />
+
+    <!-- CENTRAL SPINE / RIGHT PILLAR OF 'H' & BACKBONE OF 'K' -->
+    <path d="M 226 150 L 274 150 L 274 362 L 226 362 Z" fill="url(#goldMetallic)" />
+    <path d="M 226 150 L 238 160 L 238 352 L 226 362 Z" fill="url(#bevelLight)" />
+    <path d="M 262 160 L 274 150 L 274 362 L 262 352 Z" fill="url(#bevelDark)" opacity="0.4" />
+
+    <!-- UPPER DIAGONAL WING OF 'K' -->
+    <path d="M 262 254 L 358 150 L 408 150 L 302 264 Z" fill="url(#goldMetallic)" />
+    <!-- Top-left facet highlight on upper diagonal -->
+    <path d="M 262 254 L 358 150 L 372 150 L 282 250 Z" fill="url(#bevelLight)" />
+    <!-- Bottom facet shadow -->
+    <path d="M 288 266 L 392 162 L 408 150 L 302 264 Z" fill="url(#bevelDark)" opacity="0.4" />
+
+    <!-- LOWER DIAGONAL LEG OF 'K' -->
+    <path d="M 284 246 L 404 362 L 350 362 L 246 258 Z" fill="url(#goldMetallic)" />
+    <!-- Left highlight on lower leg -->
+    <path d="M 284 246 L 350 362 L 334 362 L 272 252 Z" fill="url(#bevelLight)" />
+    <!-- Right shadow on lower leg -->
+    <path d="M 390 350 L 404 362 L 350 362 L 374 340 Z" fill="url(#bevelDark)" opacity="0.4" />
+  </g>
+
+  <!-- Fine Gold Highlights / Sparkle Points -->
+  <polygon points="124,150 134,142 144,150 134,158" fill="#FFFFFF" opacity="0.85" />
+  <polygon points="408,150 416,144 424,150 416,156" fill="#FFFFFF" opacity="0.9" />
+  <polygon points="404,362 412,356 420,362 412,368" fill="#FFFFFF" opacity="0.8" />
+
+  <!-- Lower Branding Text "HISAB KITAB" -->
+  <g transform="translate(256, 420)">
+    <text text-anchor="middle" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="24" font-weight="900" letter-spacing="9" fill="url(#goldRing)">HISAB KITAB</text>
+    <text y="24" text-anchor="middle" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="12" font-weight="700" letter-spacing="4" fill="#94A3B8" opacity="0.9">SMART BILLING</text>
+  </g>
+</svg>

@@ -1,0 +1,15 @@
+<resources>
+    <!-- Base application theme -->
+    <style name="Theme.HisabKitab" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#0f172a</item>
+        <item name="colorPrimaryVariant">#020617</item>
+        <item name="colorOnPrimary">#ffffff</item>
+        <item name="android:statusBarColor">#020617</item>
+        <item name="android:navigationBarColor">#020617</item>
+    </style>
+
+    <style name="Theme.HisabKitab.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+</resources>

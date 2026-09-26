@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Hisab Kitab</string>
+    <string name="title_activity_main">Hisab Kitab</string>
+    <string name="package_name">com.hisabkitab.billing</string>
+</resources>
