@@ -18,6 +18,10 @@ import {
   Sparkles,
   CheckCircle2,
   FileText,
+  Smartphone,
+  Download,
+  Terminal,
+  Copy,
 } from 'lucide-react';
 import { HKIcon } from '../common/HKIcon';
 
@@ -25,6 +29,14 @@ export const MenuView: React.FC = () => {
   const { setActiveTab, totals, formatMoney, profile } = useApp();
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showDesktopModal, setShowDesktopModal] = useState(false);
+  const [showApkModal, setShowApkModal] = useState(false);
+  const [copiedCmd, setCopiedCmd] = useState(false);
+
+  const handleCopyCmd = () => {
+    navigator.clipboard.writeText('./build-apk.sh');
+    setCopiedCmd(true);
+    setTimeout(() => setCopiedCmd(false), 2000);
+  };
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-10">
@@ -314,30 +326,30 @@ export const MenuView: React.FC = () => {
             <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
           </button>
 
-          {/* Get Desktop App (Placeholder as per User Requirement 10) */}
+          {/* Android APK & Build Package */}
           <button
-            onClick={() => setShowDesktopModal(true)}
-            className="flex items-center justify-between p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs hover:border-emerald-500 transition-all text-left cursor-pointer group"
+            onClick={() => setShowApkModal(true)}
+            className="flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/30 dark:border-emerald-500/40 shadow-xs hover:border-emerald-500 transition-all text-left cursor-pointer group"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                <Monitor className="w-5 h-5" />
+              <div className="p-2.5 rounded-xl bg-emerald-600 text-white shadow-xs">
+                <Smartphone className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                    Get Desktop App
+                    Android APK & Build
                   </h3>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400">
-                    Soon
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
+                    Ready
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Windows & macOS Edition
+                  Build APK, Project Package & Guides
                 </p>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+            <ChevronRight className="w-4 h-4 text-emerald-600 group-hover:translate-x-0.5 transition-transform" />
           </button>
         </div>
       </section>
@@ -418,6 +430,126 @@ export const MenuView: React.FC = () => {
               className="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold text-xs hover:bg-slate-800 transition-colors cursor-pointer"
             >
               Got It
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Android APK Download & Build Modal */}
+      {showApkModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-2xl space-y-4 my-8">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  <Smartphone className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-900 dark:text-white">
+                    Android APK Package & Build
+                  </h3>
+                  <p className="text-[11px] text-slate-500">
+                    com.hisabkitab.billing • Ready to Build
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowApkModal(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Direct Package Download Banner */}
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white space-y-3 shadow-md">
+              <div className="flex items-center justify-between">
+                <span className="px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+                  Pre-bundled Android Project
+                </span>
+                <span className="text-[11px] font-mono opacity-80">1.2 MB</span>
+              </div>
+              <div>
+                <h4 className="text-sm font-black">
+                  Complete Android Gradle Project (.ZIP)
+                </h4>
+                <p className="text-xs text-emerald-100 mt-0.5 leading-relaxed">
+                  Includes full Android Studio project, launcher icons, native PDF sharing bridge, and pre-compiled offline web assets.
+                </p>
+              </div>
+              <a
+                href="/downloads/HisabKitab-Android-Project.zip"
+                download="HisabKitab-Android-Project.zip"
+                className="inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 font-bold text-xs shadow-xs transition-colors cursor-pointer"
+              >
+                <Download className="w-4 h-4" />
+                <span>Download Android Project ZIP</span>
+              </a>
+            </div>
+
+            {/* Technical Specifications */}
+            <div className="grid grid-cols-2 gap-2 text-[11px]">
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+                <span className="text-slate-400 block text-[10px]">App Name</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200">Hisab Kitab</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+                <span className="text-slate-400 block text-[10px]">Package ID</span>
+                <span className="font-bold font-mono text-slate-800 dark:text-slate-200 truncate block">com.hisabkitab.billing</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+                <span className="text-slate-400 block text-[10px]">Target SDK</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200">Android 14 (API 34)</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+                <span className="text-slate-400 block text-[10px]">Min Android</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200">Android 5.0 (API 22)</span>
+              </div>
+            </div>
+
+            {/* 1-Step Terminal Build Commands */}
+            <div className="space-y-2">
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <Terminal className="w-3.5 h-3.5 text-emerald-600" />
+                <span>1-Click Terminal Build Command:</span>
+              </span>
+
+              <div className="relative rounded-xl bg-slate-950 p-3 font-mono text-[11px] text-emerald-400 border border-slate-800">
+                <div className="pr-12">
+                  <span className="text-slate-500"># Run in root directory:</span>
+                  <div className="text-white font-bold">./build-apk.sh</div>
+                  <span className="text-slate-500 mt-1 block"># Or inside android/ folder:</span>
+                  <div className="text-white font-bold">./gradlew assembleRelease</div>
+                </div>
+                <button
+                  onClick={handleCopyCmd}
+                  className="absolute right-2.5 top-2.5 p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors"
+                  title="Copy command"
+                >
+                  {copiedCmd ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                </button>
+              </div>
+
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                Output APK is generated at: <code className="font-mono text-emerald-600 dark:text-emerald-400">android/app/build/outputs/apk/release/app-release-unsigned.apk</code>
+              </p>
+            </div>
+
+            {/* GitHub Actions CI note */}
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-300 space-y-1">
+              <span className="font-bold text-slate-900 dark:text-white block">
+                ⚡ Automated GitHub Actions CI Included
+              </span>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                A complete GitHub Actions workflow (<code className="font-mono">.github/workflows/build-apk.yml</code>) is configured. When pushed to GitHub, GitHub builds and attaches the signed release APK artifact automatically.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowApkModal(false)}
+              className="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold text-xs hover:bg-slate-800 transition-colors cursor-pointer"
+            >
+              Done
             </button>
           </div>
         </div>

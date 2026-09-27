@@ -106,29 +106,71 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+const DEMO_IDS = new Set([
+  'pty_01', 'pty_02', 'pty_03', 'pty_04',
+  'itm_01', 'itm_02', 'itm_03', 'itm_04', 'itm_05', 'itm_06',
+  'inv_01', 'inv_02', 'inv_03', 'inv_04', 'inv_05', 'inv_06',
+  'pay_01', 'pay_02', 'pay_03', 'pay_04', 'pay_05',
+  'exp_01', 'exp_02', 'exp_03', 'exp_04',
+]);
+
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // Ensure database initialization and legacy demo cleanup run immediately
+  initializeDatabase();
+
   useEffect(() => {
     initializeDatabase();
   }, []);
 
-  const [profile, setProfile] = useState<BusinessProfile>(() =>
-    loadFromStorage(STORAGE_KEYS.PROFILE, DEFAULT_PROFILE)
-  );
-  const [parties, setParties] = useState<Party[]>(() =>
-    loadFromStorage(STORAGE_KEYS.PARTIES, INITIAL_PARTIES)
-  );
-  const [items, setItems] = useState<Item[]>(() =>
-    loadFromStorage(STORAGE_KEYS.ITEMS, INITIAL_ITEMS)
-  );
-  const [invoices, setInvoices] = useState<Invoice[]>(() =>
-    loadFromStorage(STORAGE_KEYS.INVOICES, INITIAL_INVOICES)
-  );
-  const [payments, setPayments] = useState<Payment[]>(() =>
-    loadFromStorage(STORAGE_KEYS.PAYMENTS, INITIAL_PAYMENTS)
-  );
-  const [expenses, setExpenses] = useState<Expense[]>(() =>
-    loadFromStorage(STORAGE_KEYS.EXPENSES, INITIAL_EXPENSES)
-  );
+  const [profile, setProfile] = useState<BusinessProfile>(() => {
+    const p = loadFromStorage(STORAGE_KEYS.PROFILE, DEFAULT_PROFILE);
+    if (p.name === 'Al-Rehman Traders & Electronics') {
+      return {
+        ...p,
+        name: 'My Business',
+        phone: '',
+        email: '',
+        address: '',
+        ntn: '',
+        strn: '',
+        bankName: '',
+        bankAccountTitle: '',
+        bankAccountNumber: '',
+        bankIban: '',
+        easypaisaTitle: '',
+        easypaisaNumber: '',
+        jazzcashTitle: '',
+        jazzcashNumber: '',
+      };
+    }
+    return p;
+  });
+
+  const [parties, setParties] = useState<Party[]>(() => {
+    const list = loadFromStorage<Party[]>(STORAGE_KEYS.PARTIES, INITIAL_PARTIES);
+    return list.filter((item) => !DEMO_IDS.has(item.id));
+  });
+
+  const [items, setItems] = useState<Item[]>(() => {
+    const list = loadFromStorage<Item[]>(STORAGE_KEYS.ITEMS, INITIAL_ITEMS);
+    return list.filter((item) => !DEMO_IDS.has(item.id));
+  });
+
+  const [invoices, setInvoices] = useState<Invoice[]>(() => {
+    const list = loadFromStorage<Invoice[]>(STORAGE_KEYS.INVOICES, INITIAL_INVOICES);
+    return list.filter((item) => !DEMO_IDS.has(item.id));
+  });
+
+  const [payments, setPayments] = useState<Payment[]>(() => {
+    const list = loadFromStorage<Payment[]>(STORAGE_KEYS.PAYMENTS, INITIAL_PAYMENTS);
+    return list.filter((item) => !DEMO_IDS.has(item.id));
+  });
+
+  const [expenses, setExpenses] = useState<Expense[]>(() => {
+    const list = loadFromStorage<Expense[]>(STORAGE_KEYS.EXPENSES, INITIAL_EXPENSES);
+    return list.filter((item) => !DEMO_IDS.has(item.id));
+  });
+
   const [movements, setMovements] = useState<StockMovement[]>(() =>
     loadFromStorage(STORAGE_KEYS.MOVEMENTS, [])
   );

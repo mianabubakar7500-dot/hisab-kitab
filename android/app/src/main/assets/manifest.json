@@ -1,0 +1,31 @@
+{
+  "short_name": "Hisab Kitab",
+  "name": "HISAB KITAB - Smart Billing & Accounting",
+  "description": "Fast, modern billing, invoice maker, stock inventory manager, quotations, and party ledger for businesses.",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/iconHK.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#064e3b",
+  "theme_color": "#064e3b",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/"
+}

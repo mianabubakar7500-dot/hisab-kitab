@@ -141,10 +141,33 @@ export const ExpensesView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {filteredExpenses.length === 0 ? (
+              {expenses.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center">
+                    <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
+                      <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3">
+                        <Wallet className="w-6 h-6" />
+                      </div>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                        No expenses recorded yet
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">
+                        Track your shop rent, utilities, transport, food, wages, and operational expenses in one place.
+                      </p>
+                      <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs cursor-pointer transition-all"
+                      >
+                        <PlusCircle className="w-4 h-4" />
+                        <span>Add First Expense</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ) : filteredExpenses.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-8 text-center text-slate-400 text-xs">
-                    No expense records found.
+                    No expense records found matching criteria.
                   </td>
                 </tr>
               ) : (

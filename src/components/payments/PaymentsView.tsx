@@ -156,10 +156,42 @@ export const PaymentsView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {filteredPayments.length === 0 ? (
+              {payments.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center">
+                    <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3">
+                        <CreditCard className="w-6 h-6" />
+                      </div>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                        No payments recorded yet
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">
+                        Record customer collection slips or vendor payouts to track real-time cash and bank balances.
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleOpenModal('in')}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer transition-all"
+                        >
+                          <ArrowDownLeft className="w-3.5 h-3.5" />
+                          <span>+ Payment In</span>
+                        </button>
+                        <button
+                          onClick={() => handleOpenModal('out')}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-xs cursor-pointer transition-all"
+                        >
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                          <span>- Payment Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ) : filteredPayments.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-slate-400 text-xs">
-                    No payment records found.
+                    No payment records found matching criteria.
                   </td>
                 </tr>
               ) : (

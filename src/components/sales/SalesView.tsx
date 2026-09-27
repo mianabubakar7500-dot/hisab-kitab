@@ -213,10 +213,35 @@ export const SalesView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {filteredInvoices.length === 0 ? (
+              {invoices.filter((i) => activeTab === 'sales' ? i.type === 'sale' : i.type === 'quotation').length === 0 ? (
+                <tr>
+                  <td colSpan={activeTab === 'sales' ? 7 : 6} className="py-12 text-center">
+                    <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3">
+                        <Receipt className="w-6 h-6" />
+                      </div>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                        {activeTab === 'sales' ? 'No invoices yet' : 'No quotations yet'}
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">
+                        {activeTab === 'sales'
+                          ? 'Create your first sale invoice or bill to start billing customers and tracking receipts.'
+                          : 'Create price estimates and quotations for your clients that can convert directly to sales.'}
+                      </p>
+                      <button
+                        onClick={activeTab === 'sales' ? handleCreateSale : handleCreateQuotation}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer transition-all"
+                      >
+                        <PlusCircle className="w-4 h-4" />
+                        <span>{activeTab === 'sales' ? 'Create First Invoice' : 'Create First Quotation'}</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ) : filteredInvoices.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-slate-400 text-xs">
-                    No {activeTab === 'sales' ? 'sale invoices' : 'quotations'} found.
+                    No {activeTab === 'sales' ? 'sale invoices' : 'quotations'} found matching search.
                   </td>
                 </tr>
               ) : (
