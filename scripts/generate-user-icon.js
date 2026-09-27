@@ -1,4 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { Resvg } from '@resvg/resvg-js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '..');
+
+// Exact vector reproduction of user's iconHK image:
+// An emerald squircle with a 3D open ledger book in the shape of capital 'H'
+const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
     <!-- Background Gradient matching user's image -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -179,4 +190,50 @@
              C 344 322, 376 314, 394 316 Z" 
           fill="#22c55e" />
   </g>
-</svg>
+</svg>`;
+
+async function main() {
+  const publicDir = path.join(rootDir, 'public');
+  const srcAssetsDir = path.join(rootDir, 'src', 'assets');
+  if (!fs.existsSync(srcAssetsDir)) {
+    fs.mkdirSync(srcAssetsDir, { recursive: true });
+  }
+
+  // 1. Write public/iconHK.svg
+  const svgPath = path.join(publicDir, 'iconHK.svg');
+  fs.writeFileSync(svgPath, svgContent, 'utf8');
+  console.log('Saved SVG to:', svgPath);
+
+  // 2. Render to PNG 512x512
+  const resvg512 = new Resvg(svgContent, {
+    fitTo: { mode: 'width', value: 512 }
+  });
+  const pngData512 = resvg512.render();
+  const pngBuffer512 = pngData512.asPng();
+  
+  const pngPath512 = path.join(publicDir, 'icon-512.png');
+  const pngPathHK = path.join(publicDir, 'iconHK.png');
+  const pngPathJpeg = path.join(publicDir, 'iconHK.jpeg');
+  fs.writeFileSync(pngPath512, pngBuffer512);
+  fs.writeFileSync(pngPathHK, pngBuffer512);
+  fs.writeFileSync(pngPathJpeg, pngBuffer512);
+  console.log('Saved 512x512 PNG to:', pngPath512);
+
+  // 3. Render to PNG 192x192
+  const resvg192 = new Resvg(svgContent, {
+    fitTo: { mode: 'width', value: 192 }
+  });
+  const pngData192 = resvg192.render();
+  const pngBuffer192 = pngData192.asPng();
+  const pngPath192 = path.join(publicDir, 'icon-192.png');
+  fs.writeFileSync(pngPath192, pngBuffer192);
+  console.log('Saved 192x192 PNG to:', pngPath192);
+
+  // 4. Save to src/assets as well
+  fs.writeFileSync(path.join(srcAssetsDir, 'iconHK.svg'), svgContent, 'utf8');
+  fs.writeFileSync(path.join(srcAssetsDir, 'iconHK.png'), pngBuffer512);
+  fs.writeFileSync(path.join(srcAssetsDir, 'iconHK.jpeg'), pngBuffer512);
+  console.log('All icons generated successfully!');
+}
+
+main().catch(console.error);

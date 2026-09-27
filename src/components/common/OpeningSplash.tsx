@@ -1,174 +1,143 @@
 import React, { useState, useEffect } from 'react';
 import { HKIcon } from './HKIcon';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 interface OpeningSplashProps {
   onComplete: () => void;
   forceShow?: boolean;
 }
 
-export const OpeningSplash: React.FC<OpeningSplashProps> = ({ onComplete, forceShow = false }) => {
-  const [phase, setPhase] = useState<'intro' | 'active' | 'ready' | 'exit'>('intro');
+export const OpeningSplash: React.FC<OpeningSplashProps> = ({ onComplete }) => {
+  const [phase, setPhase] = useState<'mount' | 'appear' | 'reveal' | 'ready' | 'exit'>('mount');
   const [progress, setProgress] = useState(0);
-  const [statusText, setStatusText] = useState('Initializing Books...');
 
   useEffect(() => {
-    // Phase 1: Mount & start icon scale
+    // 1. Logo appears smoothly with subtle scale & fade
     const t0 = setTimeout(() => {
-      setPhase('active');
-    }, 80);
+      setPhase('appear');
+    }, 60);
 
-    // Progress animation synced with icon reveal
+    // 2. Branding text appears naturally
+    const t1 = setTimeout(() => {
+      setPhase('reveal');
+    }, 380);
+
+    // 3. Fast progress bar increment
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           return 100;
         }
-        const next = prev + Math.floor(Math.random() * 14) + 8;
-        return next > 100 ? 100 : next;
+        return Math.min(100, prev + 25);
       });
-    }, 110);
+    }, 80);
 
-    const t1 = setTimeout(() => {
-      setStatusText('Loading Customer Khata & Stock...');
-    }, 600);
-
+    // 4. Ready state
     const t2 = setTimeout(() => {
-      setStatusText('Syncing PDF Engine...');
-    }, 1100);
-
-    const t3 = setTimeout(() => {
-      setStatusText('Welcome to Hisab Kitab');
       setPhase('ready');
-    }, 1600);
+    }, 950);
 
-    // Phase 3: Smooth exit transition
-    const t4 = setTimeout(() => {
+    // 5. Smooth fade out transition to Home screen
+    const t3 = setTimeout(() => {
       setPhase('exit');
-    }, 1950);
+    }, 1300);
 
-    const t5 = setTimeout(() => {
+    const t4 = setTimeout(() => {
       onComplete();
-    }, 2350);
+    }, 1650);
 
     return () => {
       clearTimeout(t0);
-      clearInterval(interval);
       clearTimeout(t1);
+      clearInterval(interval);
       clearTimeout(t2);
       clearTimeout(t3);
       clearTimeout(t4);
-      clearTimeout(t5);
     };
   }, [onComplete]);
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950 text-white transition-all duration-500 select-none overflow-hidden ${
+      onClick={onComplete}
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950 text-white select-none overflow-hidden transition-all duration-400 ease-out cursor-pointer ${
         phase === 'exit'
-          ? 'opacity-0 scale-105 pointer-events-none'
+          ? 'opacity-0 scale-102 pointer-events-none'
           : 'opacity-100 scale-100'
       }`}
     >
-      {/* Ambient Radial Background Glows */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_35%,rgba(16,185,129,0.18),rgba(15,23,42,0.95))]" />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Dynamic Ambient Emerald Background Lighting */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(16,185,129,0.18),rgba(6,78,59,0.08),rgba(2,44,34,0))] pointer-events-none" />
+      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-emerald-500/12 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* Decorative Gold Light Particle Ring */}
-      <div className="relative z-10 flex flex-col items-center">
+      {/* Main Content Container */}
+      <div className="relative z-10 flex flex-col items-center px-6 max-w-sm w-full text-center">
         {/* Animated Icon Container */}
-        <div className="relative flex items-center justify-center">
-          {/* Subtle Outer Pulsing Wave */}
+        <div className="relative flex items-center justify-center mb-6">
+          {/* Subtle Emerald Glow Aura */}
           <div
-            className={`absolute -inset-4 rounded-[40px] bg-gradient-to-r from-amber-500/20 via-emerald-500/20 to-amber-500/20 blur-xl transition-all duration-1000 ${
-              phase === 'active' || phase === 'ready'
-                ? 'scale-110 opacity-70 animate-pulse'
-                : 'scale-90 opacity-0'
+            className={`absolute -inset-6 rounded-[56px] bg-emerald-500/20 blur-2xl transition-all duration-700 ${
+              phase === 'appear' || phase === 'reveal' || phase === 'ready'
+                ? 'scale-110 opacity-70'
+                : 'scale-75 opacity-0'
             }`}
           />
 
-          {/* Shimmer sweep effect */}
-          <div className="relative group">
-            <HKIcon
-              size={130}
-              className={`transition-all duration-700 ease-out transform ${
-                phase === 'intro'
-                  ? 'scale-70 opacity-0 rotate-[-4deg]'
-                  : phase === 'active'
-                  ? 'scale-100 opacity-100 rotate-0'
-                  : 'scale-105 opacity-100'
-              }`}
-            />
+          {/* Icon with Subtle, Stable Scale & Fade (Not Flashy) */}
+          <div
+            className={`relative transition-all duration-500 ease-out transform ${
+              phase === 'mount'
+                ? 'scale-85 opacity-0 translate-y-3'
+                : 'scale-100 opacity-100 translate-y-0'
+            }`}
+          >
+            <HKIcon size={112} className="drop-shadow-[0_16px_30px_rgba(5,150,105,0.4)]" />
 
-            {/* Glowing Sweep Highlight */}
-            <div
-              className={`absolute inset-0 rounded-[32px] overflow-hidden pointer-events-none transition-opacity duration-500 ${
-                phase === 'active' || phase === 'ready' ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              <div className="absolute -inset-full top-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-[shimmer_2s_infinite]" />
+            {/* Subtle light sweep over the book */}
+            <div className="absolute inset-0 rounded-[28px] overflow-hidden pointer-events-none">
+              <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-[shimmer_2s_infinite]" />
             </div>
           </div>
         </div>
 
-        {/* Brand Text Reveal - Synced with Icon */}
+        {/* Hisab Kitab Branding Appears Naturally */}
         <div
-          className={`mt-6 text-center transition-all duration-700 delay-150 transform ${
-            phase === 'intro'
-              ? 'translate-y-4 opacity-0'
+          className={`space-y-1 transition-all duration-500 transform ${
+            phase === 'mount' || phase === 'appear'
+              ? 'translate-y-3 opacity-0'
               : 'translate-y-0 opacity-100'
           }`}
         >
-          <div className="flex items-center justify-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-[0.25em] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-300 font-sans">
-              HISAB KITAB
-            </h1>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold tracking-wider uppercase mb-1">
+            <Sparkles className="w-3 h-3" />
+            <span>Digital Accounting</span>
           </div>
-          <p className="mt-1 text-xs sm:text-sm font-semibold tracking-[0.3em] uppercase text-emerald-400/90">
-            Smart Billing & Accounting
+
+          <h1 className="text-3xl font-black tracking-tight text-white flex items-center justify-center gap-2">
+            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 bg-clip-text text-transparent">
+              HISAB
+            </span>
+            <span className="text-slate-100">KITAB</span>
+          </h1>
+
+          <p className="text-xs text-emerald-300/80 font-medium">
+            Smart Billing & Accounting Made Simple
           </p>
         </div>
 
-        {/* Dynamic Progress Bar & Status Text */}
+        {/* Subtle Minimalist Loading Bar */}
         <div
-          className={`mt-8 w-64 flex flex-col items-center gap-2 transition-all duration-500 delay-300 ${
-            phase === 'intro' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+          className={`w-48 mt-6 transition-all duration-400 ${
+            phase === 'mount' || phase === 'appear' ? 'opacity-0' : 'opacity-100'
           }`}
         >
-          <div className="w-full h-1.5 bg-slate-800/90 rounded-full overflow-hidden border border-slate-700/60 p-[1px]">
+          <div className="h-1 w-full bg-slate-900 rounded-full overflow-hidden border border-emerald-500/20">
             <div
-              className="h-full bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-300 rounded-full transition-all duration-200 ease-out"
+              className="h-full bg-gradient-to-r from-emerald-500 to-teal-300 rounded-full transition-all duration-150 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
-
-          <div className="w-full flex items-center justify-between text-[11px] font-medium text-slate-400">
-            <span className="flex items-center gap-1.5 truncate">
-              {phase === 'ready' ? (
-                <Sparkles className="h-3 w-3 text-amber-300 animate-spin" />
-              ) : (
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
-              )}
-              <span className="text-slate-300">{statusText}</span>
-            </span>
-            <span className="font-mono text-emerald-400 font-bold">{progress}%</span>
-          </div>
         </div>
-      </div>
-
-      {/* Subtle Skip Button */}
-      <button
-        onClick={onComplete}
-        className="absolute bottom-6 right-6 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white text-xs font-semibold backdrop-blur-md border border-slate-700/60 transition-all cursor-pointer"
-      >
-        <span>Skip</span>
-        <ArrowRight className="h-3 w-3" />
-      </button>
-
-      {/* Bottom Version Branding */}
-      <div className="absolute bottom-6 left-6 text-[10px] text-slate-500 font-mono tracking-wider">
-        v2.5 • Offline Ready
       </div>
     </div>
   );

@@ -24,6 +24,8 @@ import {
 } from '../services/db';
 
 export type ActiveTab =
+  | 'home'
+  | 'menu'
   | 'dashboard'
   | 'parties'
   | 'items'
@@ -78,9 +80,6 @@ interface AppContextType {
   setIsQuickPartyModalOpen: (open: boolean) => void;
   onPartyCreatedCallback: ((party: Party) => void) | null;
   setOnPartyCreatedCallback: (cb: ((party: Party) => void) | null) => void;
-  // App Downloads, APK & Source Code Center
-  isDownloadModalOpen: boolean;
-  setIsDownloadModalOpen: (open: boolean) => void;
   // Security lock
   isAppLocked: boolean;
   unlockWithPin: (pin: string) => boolean;
@@ -90,6 +89,11 @@ interface AppContextType {
   totals: {
     todaySales: number;
     monthSales: number;
+    totalSales: number;
+    totalInvoices: number;
+    totalItems: number;
+    totalExpenses: number;
+    cashBalance: number;
     toCollect: number; // Customer Receivables
     toPay: number;     // Supplier Payables
     stockValue: number;
@@ -129,7 +133,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     loadFromStorage(STORAGE_KEYS.MOVEMENTS, [])
   );
 
-  const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [isNewInvoiceOpen, setIsNewInvoiceOpen] = useState(false);
   const [newInvoiceType, setNewInvoiceType] = useState<'sale' | 'purchase' | 'quotation' | 'sale_return'>('sale');
@@ -140,9 +144,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Quick Party Creation Modal triggerable inside invoice creation
   const [isQuickPartyModalOpen, setIsQuickPartyModalOpen] = useState(false);
   const [onPartyCreatedCallback, setOnPartyCreatedCallback] = useState<((party: Party) => void) | null>(null);
-
-  // App Downloads, APK & Source Code Center Modal
-  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
 
   // App Lock
   const [isAppLocked, setIsAppLocked] = useState<boolean>(() => {
@@ -688,6 +689,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     let monthSales = 0;
     let quotationsCount = 0;
 
+    let totalSales = 0;
+    let totalInvoices = 0;
+
     invoices.forEach((inv) => {
       if (inv.type === 'quotation') {
         quotationsCount++;
@@ -696,6 +700,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (inv.status === 'cancelled') return;
 
       if (inv.type === 'sale') {
+        totalSales += inv.grandTotal;
+        totalInvoices++;
         if (inv.date === todayStr) todaySales += inv.grandTotal;
         if (inv.date.startsWith(currentMonth)) monthSales += inv.grandTotal;
       }
@@ -717,16 +723,26 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
     });
 
+    const totalExpenses = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+    const paymentsIn = payments.filter((p) => p.direction === 'in').reduce((sum, p) => sum + (p.amount || 0), 0);
+    const paymentsOut = payments.filter((p) => p.direction === 'out').reduce((sum, p) => sum + (p.amount || 0), 0);
+    const cashBalance = Math.max(0, paymentsIn - paymentsOut - totalExpenses + todaySales);
+
     return {
       todaySales,
       monthSales,
+      totalSales,
+      totalInvoices,
+      totalItems: items.length,
+      totalExpenses,
+      cashBalance,
       toCollect,
       toPay,
       stockValue,
       lowStockCount,
       totalQuotations: quotationsCount,
     };
-  }, [invoices, parties, items]);
+  }, [invoices, parties, items, expenses, payments]);
 
   const resetDemoData = () => {
     initializeDatabase(true);
@@ -795,8 +811,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setIsQuickPartyModalOpen,
         onPartyCreatedCallback,
         setOnPartyCreatedCallback,
-        isDownloadModalOpen,
-        setIsDownloadModalOpen,
         isAppLocked,
         unlockWithPin,
         lockApp,

@@ -22,20 +22,18 @@ import {
   Sliders,
   DollarSign,
   AlertTriangle,
-  Smartphone,
-  Code2,
 } from 'lucide-react';
 import { HKIcon } from '../common/HKIcon';
 
 interface TipCard {
   id: string;
-  category: 'invoicing' | 'khata' | 'inventory' | 'whatsapp' | 'expenses' | 'backup' | 'downloads';
+  category: 'invoicing' | 'khata' | 'inventory' | 'whatsapp' | 'expenses' | 'backup';
   title: string;
   badge: string;
   badgeColor: string;
   summary: string;
   steps: string[];
-  illustrationType: 'tax_invoice' | 'whatsapp_pdf' | 'khata_ledger' | 'stock_alert' | 'quotation_convert' | 'backup_pin' | 'apk_download';
+  illustrationType: 'tax_invoice' | 'whatsapp_pdf' | 'khata_ledger' | 'stock_alert' | 'quotation_convert' | 'backup_pin';
   proTip: string;
   actionText?: string;
   actionHandler?: () => void;
@@ -51,7 +49,6 @@ export const GuideTipsView: React.FC<GuideTipsViewProps> = ({ onReplayAnimation 
     setIsNewInvoiceOpen,
     setNewInvoiceType,
     setActiveTab,
-    setIsDownloadModalOpen,
   } = useApp();
 
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -60,7 +57,6 @@ export const GuideTipsView: React.FC<GuideTipsViewProps> = ({ onReplayAnimation 
 
   const categories = [
     { id: 'all', label: 'All Guides & Tips', icon: BookOpen },
-    { id: 'downloads', label: 'APK & Source Code', icon: Smartphone },
     { id: 'invoicing', label: 'Invoices & Tax', icon: Receipt },
     { id: 'whatsapp', label: 'WhatsApp & PDF', icon: Share2 },
     { id: 'khata', label: 'Customer Khata', icon: Users },
@@ -89,26 +85,6 @@ export const GuideTipsView: React.FC<GuideTipsViewProps> = ({ onReplayAnimation 
         'You can enable or disable Tax globally in Settings -> "Tax / GST Enabled", or turn it on/off on any individual bill with one click.',
       actionText: 'Configure Tax in Settings',
       actionHandler: () => setActiveTab('settings'),
-    },
-    {
-      id: 'apk-download-tip',
-      category: 'downloads',
-      title: 'Download Source Code, Android APK & AAB Bundle',
-      badge: 'App Package',
-      badgeColor: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
-      summary:
-        'Download the complete application source code (.ZIP), Android Studio project files, and learn how to generate APK for direct mobile install or AAB for Google Play Store.',
-      steps: [
-        'Method 1 (Instant Phone Install): Open in Google Chrome on your Android phone and tap "Install app" to generate a genuine WebAPK with offline support.',
-        'Method 2 (Cloud APK/AAB Builder): Use PWABuilder to package the live app URL into signed APK and Play Store AAB in 60 seconds.',
-        'Method 3 (Android Studio): Extract the downloaded source or android project ZIP, run "npm run build && ./gradlew assembleRelease" to get app-release.apk, or "./gradlew bundleRelease" for Google Play Store .aab bundle.',
-        'Click the button below to download the complete source code and project archive immediately.',
-      ],
-      illustrationType: 'apk_download',
-      proTip:
-        'The source code is completely self-contained with React 19, TypeScript, Express, and native Android Studio Gradle files.',
-      actionText: 'Open Downloads & APK Hub',
-      actionHandler: () => setIsDownloadModalOpen(true),
     },
     {
       id: 'whatsapp-pdf-tip',
@@ -551,32 +527,6 @@ export const GuideTipsView: React.FC<GuideTipsViewProps> = ({ onReplayAnimation 
                           <span className="px-2.5 py-1 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 text-xs font-mono font-bold">
                             INV-0001
                           </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {tip.illustrationType === 'apk_download' && (
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-300 dark:border-amber-800 text-center">
-                          <Code2 className="h-5 w-5 text-amber-600 dark:text-amber-400 mx-auto mb-1.5" />
-                          <div className="font-bold text-slate-800 dark:text-white">1. Source Code (.ZIP)</div>
-                          <p className="text-[11px] text-slate-500 mt-1">
-                            Clean React 19 + TypeScript + Express project. Fully modular & ready to run.
-                          </p>
-                        </div>
-                        <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-300 dark:border-emerald-800 text-center">
-                          <Smartphone className="h-5 w-5 text-emerald-600 dark:text-emerald-400 mx-auto mb-1.5" />
-                          <div className="font-bold text-slate-800 dark:text-white">2. Android Studio</div>
-                          <p className="text-[11px] text-slate-500 mt-1">
-                            Complete Gradle project to compile debug/release APK & Play Store AAB.
-                          </p>
-                        </div>
-                        <div className="p-3.5 rounded-xl bg-indigo-500/10 border border-indigo-300 dark:border-indigo-800 text-center">
-                          <Download className="h-5 w-5 text-indigo-600 dark:text-indigo-400 mx-auto mb-1.5" />
-                          <div className="font-bold text-slate-800 dark:text-white">3. 1-Click Install</div>
-                          <p className="text-[11px] text-slate-500 mt-1">
-                            Install directly as a standalone WebAPK from Chrome on your phone.
-                          </p>
                         </div>
                       </div>
                     )}

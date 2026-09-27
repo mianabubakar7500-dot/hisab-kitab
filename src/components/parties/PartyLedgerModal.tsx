@@ -11,6 +11,7 @@ import {
 import { Party } from '../../types';
 import { printHtmlString } from '../../services/printService';
 import { downloadLedgerPdf, getLedgerPdfFile } from '../../services/pdfService';
+import { sharePdfLedger } from '../../services/shareService';
 
 interface PartyLedgerModalProps {
   party: Party | null;
@@ -137,30 +138,11 @@ Thank you!`;
     }
     const cleanWhatsAppUrl = phoneParam ? `https://api.whatsapp.com/send?${phoneParam}` : `https://api.whatsapp.com/send`;
 
-    // Try Web Share API with PDF file strictly without text details
-    try {
-      const pdfFile = getLedgerPdfFile(party, ledgerRows, profile);
-      if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-        await navigator.share({
-          files: [pdfFile],
-          title: `Statement ${party.name}`,
-          // No text parameter: sends clean PDF only without text breakdown
-        });
-        showToast('📄 Shared ledger PDF successfully!');
-        return;
-      }
-    } catch (shareErr: any) {
-      if (shareErr.name === 'AbortError') {
-        return;
-      }
-    }
+    // Universal Android Native Share Sheet
+    const shared = await sharePdfLedger(party, ledgerRows, profile, (msg) => showToast(msg));
 
-    // Fallback: download PDF and open WhatsApp cleanly
-    try {
-      downloadLedgerPdf(party, ledgerRows, profile);
-      showToast(`📄 PDF statement downloaded! Opening WhatsApp...`);
-    } catch (e) {
-      console.error(e);
+    if (typeof window !== 'undefined' && (window as any).AndroidBridge) {
+      return;
     }
 
     setTimeout(() => {
@@ -172,6 +154,10 @@ Thank you!`;
       a.click();
       document.body.removeChild(a);
     }, 400);
+  };
+
+  const handleShareNativePdf = async () => {
+    await sharePdfLedger(party, ledgerRows, profile, (msg) => showToast(msg));
   };
 
   return (
@@ -212,31 +198,32 @@ Thank you!`;
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Download PDF Statement */}
+            {/* Native Android Share Sheet */}
             <button
-              onClick={handleDownloadPdf}
-              className="flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 cursor-pointer shadow-xs transition-all"
-              title="Download ledger statement as a PDF file"
+              onClick={handleShareNativePdf}
+              className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 shadow-sm cursor-pointer transition-all active:scale-95"
+              title="Share PDF statement via Android Share Sheet (WhatsApp, Email, Drive, Bluetooth)"
             >
-              <Download className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              <span>Download PDF</span>
+              <Share2 className="h-4 w-4" />
+              <span>Share PDF</span>
+            </button>
+
+            {/* Direct WhatsApp */}
+            <button
+              onClick={() => handleWhatsAppStatement(false)}
+              className="flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 cursor-pointer shadow-xs transition-all"
+              title="Share PDF statement on WhatsApp"
+            >
+              <Send className="h-3.5 w-3.5 text-emerald-600" />
+              <span>WhatsApp</span>
             </button>
 
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer"
+              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer"
             >
               <Printer className="h-4 w-4" />
-              <span>Print</span>
-            </button>
-
-            <button
-              onClick={() => handleWhatsAppStatement(false)}
-              className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 shadow-sm cursor-pointer transition-all active:scale-95"
-              title="Share PDF statement on WhatsApp with any contact or group"
-            >
-              <Share2 className="h-4 w-4" />
-              <span>WhatsApp (PDF)</span>
+              <span className="hidden sm:inline">Print</span>
             </button>
 
             {party.phone && (

@@ -962,8 +962,8 @@ export const InvoiceFormModal: React.FC = () => {
             </div>
           </div>
 
-          {/* Footer Submit Buttons */}
-          <div className="flex items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+          {/* Footer Submit Buttons (Sticky on Mobile) */}
+          <div className="sticky bottom-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md flex flex-wrap items-center justify-between gap-2.5 pt-3 pb-2 border-t border-slate-200 dark:border-slate-800 z-10">
             <div>
               {!editingInvoice && (isDraftRestored || isFormDirty) && (
                 <button

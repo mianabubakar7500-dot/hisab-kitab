@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
         // Hardware Acceleration
         webView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
 
+        // Native Android Bridge for Sharing PDFs and Android System Integration
+        webView.addJavascriptInterface(new AndroidBridge(this), "AndroidBridge");
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -147,6 +150,60 @@ public class MainActivity extends AppCompatActivity {
                 filePathCallback.onReceiveValue(results);
                 filePathCallback = null;
             }
+        }
+    }
+
+    /**
+     * JavaScript Interface providing native Android functionality to Hisab Kitab:
+     * - Native FileProvider PDF sharing with Android's system share sheet (WhatsApp, Email, Drive, etc.)
+     * - Direct Download Manager saving
+     */
+    public class AndroidBridge {
+        private final MainActivity activity;
+
+        public AndroidBridge(MainActivity activity) {
+            this.activity = activity;
+        }
+
+        @android.webkit.JavascriptInterface
+        public boolean isNativeAndroid() {
+            return true;
+        }
+
+        @android.webkit.JavascriptInterface
+        public void sharePdfBase64(String base64Data, String filename, String title) {
+            activity.runOnUiThread(() -> {
+                try {
+                    byte[] pdfBytes = android.util.Base64.decode(base64Data, android.util.Base64.DEFAULT);
+                    java.io.File cacheDir = new java.io.File(activity.getCacheDir(), "shared_pdfs");
+                    if (!cacheDir.exists()) {
+                        cacheDir.mkdirs();
+                    }
+                    java.io.File pdfFile = new java.io.File(cacheDir, filename);
+                    java.io.FileOutputStream fos = new java.io.FileOutputStream(pdfFile);
+                    fos.write(pdfBytes);
+                    fos.flush();
+                    fos.close();
+
+                    Uri contentUri = androidx.core.content.FileProvider.getUriForFile(
+                        activity,
+                        activity.getPackageName() + ".fileprovider",
+                        pdfFile
+                    );
+
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("application/pdf");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, title);
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    Intent chooser = Intent.createChooser(shareIntent, "Share PDF with...");
+                    chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    activity.startActivity(chooser);
+                } catch (Exception e) {
+                    Toast.makeText(activity, "Error sharing PDF: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 }

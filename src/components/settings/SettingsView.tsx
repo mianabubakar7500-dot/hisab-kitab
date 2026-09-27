@@ -17,15 +17,13 @@ import {
   BookOpen,
   Sparkles,
   Play,
-  Smartphone,
-  Code2,
 } from 'lucide-react';
 import { exportDatabaseAsJson, importDatabaseFromJson, resetToDefaultData } from '../../services/db';
 import { ColorTheme } from '../../types';
 import { HKIcon } from '../common/HKIcon';
 
 export const SettingsView: React.FC = () => {
-  const { profile, updateProfile, formatMoney, setActiveTab, setIsDownloadModalOpen } = useApp();
+  const { profile, updateProfile, formatMoney, setActiveTab } = useApp();
 
   const [formData, setFormData] = useState({ ...profile });
   const [successMsg, setSuccessMsg] = useState('');
@@ -618,103 +616,6 @@ export const SettingsView: React.FC = () => {
             <RotateCcw className="h-4 w-4" />
             <span>Reset to Demo Data</span>
           </button>
-        </div>
-      </div>
-
-      {/* Android APK, AAB & Source Code Downloads Section */}
-      <div className="rounded-2xl border-2 border-amber-500/30 bg-gradient-to-br from-amber-50/60 via-white to-slate-50 p-5 shadow-sm dark:from-amber-950/20 dark:via-slate-900 dark:to-slate-800 space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
-          <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-amber-500/10 p-2.5 text-amber-600 dark:text-amber-400">
-              <Smartphone className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold text-slate-900 dark:text-white">
-                  Android APK, AAB & Source Code Downloads
-                </h2>
-                <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                  Ready to Download
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Download the complete codebase (.ZIP), native Android Studio project with Gradle configs, and generate APK / Play Store AAB.
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setIsDownloadModalOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 text-xs font-bold shadow-sm cursor-pointer transition-all active:scale-95"
-          >
-            <Smartphone className="h-4 w-4" />
-            <span>Open APK & Build Hub</span>
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {/* 1. Download Source Code ZIP */}
-          <div className="rounded-xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800/80 p-3.5 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white">
-                <Code2 className="h-4 w-4 text-amber-500" />
-                <span>Complete Source Code</span>
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                Full React 19 + TypeScript + Express project with all assets & services.
-              </p>
-            </div>
-            <a
-              href="/downloads/hisab-kitab-source.zip"
-              download="hisab-kitab-pro-source.zip"
-              className="mt-3 inline-flex items-center justify-center gap-1.5 rounded-lg bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 text-xs font-semibold cursor-pointer transition-colors"
-            >
-              <Download className="h-3.5 w-3.5" />
-              <span>Download Source (.ZIP)</span>
-            </a>
-          </div>
-
-          {/* 2. Download Android Studio Bundle */}
-          <div className="rounded-xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800/80 p-3.5 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white">
-                <Smartphone className="h-4 w-4 text-emerald-500" />
-                <span>Android Studio Project</span>
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                Pre-configured Gradle files, AndroidManifest, and MainActivity for APK & AAB.
-              </p>
-            </div>
-            <a
-              href="/downloads/hisab-kitab-android.zip"
-              download="hisab-kitab-android-studio-project.zip"
-              className="mt-3 inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-3 text-xs font-semibold cursor-pointer transition-colors"
-            >
-              <Download className="h-3.5 w-3.5" />
-              <span>Download Android (.ZIP)</span>
-            </a>
-          </div>
-
-          {/* 3. 1-Click APK / PWA Install */}
-          <div className="rounded-xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800/80 p-3.5 flex flex-col justify-between sm:col-span-2 lg:col-span-1">
-            <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white">
-                <Sparkles className="h-4 w-4 text-indigo-500" />
-                <span>Direct Install as Android App</span>
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                Add to your Android home screen as a WebAPK with offline support.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsDownloadModalOpen(true)}
-              className="mt-3 inline-flex items-center justify-center gap-1.5 rounded-lg border border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 py-1.5 px-3 text-xs font-semibold cursor-pointer transition-colors"
-            >
-              <span>View Build & Install Guide</span>
-            </button>
-          </div>
         </div>
       </div>
 

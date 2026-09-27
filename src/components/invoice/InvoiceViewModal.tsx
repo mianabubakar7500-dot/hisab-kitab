@@ -18,6 +18,7 @@ import {
 import { Invoice } from '../../types';
 import { printInvoiceDocument, downloadInvoiceHtmlFile } from '../../services/printService';
 import { downloadInvoicePdf, getInvoicePdfFile } from '../../services/pdfService';
+import { sharePdfInvoice } from '../../services/shareService';
 
 export const InvoiceViewModal: React.FC = () => {
   const {
@@ -136,30 +137,12 @@ export const InvoiceViewModal: React.FC = () => {
       ? `https://api.whatsapp.com/send?${phoneParam}` 
       : `https://api.whatsapp.com/send`;
 
-    // 1. Try Web Share API with genuine PDF file (strictly without any text message attached)
-    try {
-      const pdfFile = getInvoicePdfFile(inv, profile);
-      if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-        await navigator.share({
-          files: [pdfFile],
-          title: `${isQuotation ? 'Quotation' : 'Invoice'} ${inv.invoiceNumber}`,
-          // Strictly NO text parameter here: ensures NO text detail is sent along with PDF
-        });
-        showToast('📄 Shared PDF to WhatsApp successfully!');
-        return;
-      }
-    } catch (shareErr: any) {
-      if (shareErr.name === 'AbortError') {
-        return; // User dismissed share sheet
-      }
-    }
-
-    // 2. Fallback: Automatically download PDF to device and open WhatsApp cleanly without dumping text
-    try {
-      downloadInvoicePdf(inv, profile);
-      showToast(`📄 PDF downloaded! Opening WhatsApp to attach and send...`);
-    } catch (e) {
-      console.error('PDF generation error:', e);
+    // 1. Trigger Universal Android Native Share Sheet
+    const shared = await sharePdfInvoice(inv, profile, (msg) => showToast(msg));
+    
+    // In Native Android APK, the share sheet is already displayed
+    if (typeof window !== 'undefined' && (window as any).AndroidBridge) {
+      return;
     }
 
     // Direct anchor click ensures links open cleanly even inside iframe/sandboxes
@@ -172,6 +155,11 @@ export const InvoiceViewModal: React.FC = () => {
       a.click();
       document.body.removeChild(a);
     }, 400);
+  };
+
+  // Open Android Native Share Sheet directly
+  const handleShareNativePdf = async () => {
+    await sharePdfInvoice(inv, profile, (msg) => showToast(msg));
   };
 
   // Share text message breakdown only (when user explicitly requests text summary)
@@ -246,14 +234,24 @@ export const InvoiceViewModal: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Direct Download PDF File */}
+            {/* Primary Action: Android Native Share Sheet (WhatsApp, Email, Drive, Bluetooth, etc.) */}
             <button
-              onClick={handleDownloadPdf}
-              className="flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 cursor-pointer shadow-xs transition-all"
-              title="Download sale invoice as a PDF file"
+              onClick={handleShareNativePdf}
+              className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 shadow-sm cursor-pointer transition-all active:scale-95"
+              title="Open Android share sheet (WhatsApp, Email, Bluetooth, Drive, etc.)"
             >
-              <Download className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              <span>Download PDF</span>
+              <Share2 className="h-4 w-4" />
+              <span>Share PDF</span>
+            </button>
+
+            {/* Direct WhatsApp Action */}
+            <button
+              onClick={() => handleShareWhatsAppPdf(false)}
+              className="flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 cursor-pointer shadow-xs transition-all"
+              title="Share clean PDF invoice directly to WhatsApp"
+            >
+              <Send className="h-3.5 w-3.5 text-emerald-600" />
+              <span>WhatsApp</span>
             </button>
 
             {/* Print or Save as PDF */}
@@ -263,18 +261,17 @@ export const InvoiceViewModal: React.FC = () => {
               title="Save as PDF or Print"
             >
               <Printer className="h-4 w-4 text-slate-600 dark:text-slate-300" />
-              <span className="hidden sm:inline">Save PDF / Print</span>
-              <span className="sm:hidden">Print</span>
+              <span className="hidden sm:inline">Print</span>
             </button>
 
-            {/* Direct WhatsApp Share to Anyone / Any Contact with PDF ONLY (no text details) */}
+            {/* Direct Download PDF File */}
             <button
-              onClick={() => handleShareWhatsAppPdf(false)}
-              className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 shadow-sm cursor-pointer transition-all active:scale-95"
-              title="Share clean PDF invoice on WhatsApp (strictly no text details attached)"
+              onClick={handleDownloadPdf}
+              className="hidden md:flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer shadow-xs transition-all"
+              title="Download invoice as a PDF file"
             >
-              <Share2 className="h-4 w-4" />
-              <span>WhatsApp (PDF)</span>
+              <Download className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+              <span>Download</span>
             </button>
 
             {/* If party phone exists, provide secondary quick action to send PDF to that phone */}

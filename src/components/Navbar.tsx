@@ -10,7 +10,6 @@ import {
   FileText,
   X,
   Settings as SettingsIcon,
-  Smartphone,
 } from 'lucide-react';
 import { GlobalSearchDropdown } from './common/GlobalSearchDropdown';
 import { HKIcon } from './common/HKIcon';
@@ -26,7 +25,6 @@ export const Navbar: React.FC = () => {
     lockApp,
     setActiveTab,
     setViewingLedgerParty,
-    setIsDownloadModalOpen,
   } = useApp();
 
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -52,7 +50,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/95 lg:px-6">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white/95 px-3 sm:px-4 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/95 lg:px-6 pt-[env(safe-area-inset-top,0px)]">
       {/* Left: Brand Identity -> Clicking opens Settings per User Requirement 1 */}
       <div className="flex items-center gap-3">
         <button
@@ -204,17 +202,6 @@ export const Navbar: React.FC = () => {
         >
           <PlusCircle className="h-4 w-4" />
           <span>+ New Sale</span>
-        </button>
-
-        {/* APK & Source Code Center */}
-        <button
-          onClick={() => setIsDownloadModalOpen(true)}
-          className="flex items-center gap-1.5 rounded-xl border border-amber-300/80 bg-amber-50/80 px-2.5 sm:px-3 py-2 text-xs font-bold text-amber-900 hover:bg-amber-100 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-300 transition-all cursor-pointer shadow-xs active:scale-95"
-          title="Download APK, AAB Bundle and Complete Source Code"
-        >
-          <Smartphone className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-          <span className="hidden xl:inline">APK & Source</span>
-          <span className="xl:hidden">APK</span>
         </button>
 
         {/* Dark/Light mode toggle */}

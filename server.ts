@@ -252,6 +252,19 @@ app.get('/api/download/android-project', (req, res) => {
   }
 });
 
+app.get('/api/download/apk', (req, res) => {
+  const apkPath = path.join(__dirname, 'public', 'downloads', 'hisab-kitab.apk');
+  if (fs.existsSync(apkPath)) {
+    res.download(apkPath, 'hisab-kitab.apk');
+  } else {
+    // Redirect to direct PWABuilder Android generator with this app URL
+    const appHost = req.get('host') || 'ais-pre-qaulbh4ijzkmppa54iekp7-310310438182.asia-southeast1.run.app';
+    const proto = req.protocol === 'https' || req.get('x-forwarded-proto') === 'https' ? 'https' : 'http';
+    const currentUrl = `${proto}://${appHost}`;
+    res.redirect(`https://www.pwabuilder.com/?url=${encodeURIComponent(currentUrl)}`);
+  }
+});
+
 // Configure Vite integration for dev server or static files in production
 async function startServer() {
   const isProd = process.env.NODE_ENV === 'production';

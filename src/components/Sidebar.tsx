@@ -27,7 +27,8 @@ export const Sidebar: React.FC = () => {
   const { activeTab, setActiveTab, totals } = useApp();
 
   const coreBillingItems: NavItem[] = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'home', label: 'Home', icon: LayoutDashboard },
+    { id: 'dashboard', label: 'Full Analytics', icon: BarChart3 },
     { id: 'sales', label: 'Sale Invoices', icon: Receipt },
     { id: 'purchases', label: 'Purchase Bills', icon: ShoppingBag },
     {
